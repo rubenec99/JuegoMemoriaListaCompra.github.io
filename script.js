@@ -9,6 +9,70 @@ const div_btn = document.createElement("div");
 div_btn.id = "btns";
 document.body.append(tablero);
 
+//Estatería
+const estanteria = document.createElement("div");
+estanteria.classList.add("estanteria");
+
+//Carrito
+const carrito = document.createElement("div");
+carrito.classList.add("carrito");
+
+//Bloc de notas
+const bloc = document.createElement("fieldset");
+bloc.classList.add("bloc");
+
+//Array de imagenes
+const comidas = [
+  {
+    index: 0,
+    img: "./img/calabaza.png",
+  },
+  {
+    index: 1,
+    img: "./img/fresa.png",
+  },
+  {
+    index: 2,
+    img: "./img/guisantes.png",
+  },
+  {
+    index: 3,
+    img: "./img/huevo.png",
+  },
+  {
+    index: 4,
+    img: "./img/lechuga.png",
+  },
+  {
+    index: 5,
+    img: "./img/maiz.png",
+  },
+  {
+    index: 6,
+    img: "./img/manzana.png",
+  },
+  {
+    index: 7,
+    img: "./img/nabo.png",
+  },
+  {
+    index: 8,
+    img: "./img/patata.png",
+  },
+  {
+    index: 9,
+    img: "./img/pera.png",
+  },
+  {
+    index: 10,
+    img: "./img/rabano.png",
+  },
+  {
+    index: 11,
+    img: "./img/tomate.png",
+  },
+];
+
 //Funcion para la creacion de los botones de nivel y agregandolos a la caja de botones, asignación de clase a cada boton
 function CrearBtn() {
   const easy = document.createElement("button");
@@ -58,20 +122,62 @@ document.addEventListener("click", (e) => {
 //Funcion para el click
 function play(tiempo, dificultad) {
   tablero.innerHTML = "";
-  let blog = document.createElement("fieldset");
-  blog.classList.add("blog");
+  let bloc = document.createElement("fieldset");
+  bloc.classList.add("bloc");
   if (dificultad == "FACIL") {
-    let html = "";
-    for (let index = 0; index < 7; index++) {}
+    Listado("FACIL");
+    setTimeout(() => {
+      tablero.innerHTML = "";
+    }, 10000);
+  } else if (dificultad == "MEDIO") {
+    Listado("MEDIO");
+    setTimeout(() => {
+      tablero.innerHTML = "";
+    }, 10000);
+  } else if (dificultad == "DIFICIL") {
+    Listado("DIFICIL");
+    setTimeout(() => {
+      tablero.innerHTML = "";
+    }, 8000);
   }
 }
-/* 
-let btn = document.getElementsByTagName("button");
-btn[0].addEventListener("click", play(btn[0].value, btn[0].innerText));
-btn[1].addEventListener("click", play(btn[1].value, btn[1].innerText));
-btn[2].addEventListener("click", play(btn[2].value, btn[2].innerText)); */
-//Funcion de onclick para los botones
 
+function Listado(dificultad) {
+  let array = [];
+  let html = "";
+  let exists = false;
+  switch (dificultad) {
+    case "FACIL":
+      for (let index = 0; index < 7; index++) {
+        array.push(comidas[Math.floor(Math.random() * 11)]);
+        html += `<img src="${array[index].img}">`;
+      }
+      bloc.innerHTML = html;
+      tablero.append(bloc);
+      localStorage.setItem("Lista Compra", JSON.stringify(array));
+      break;
+    case "MEDIO":
+      for (let index = 0; index < 7; index++) {
+        array.push(comidas[Math.floor(Math.random() * 11)]);
+        html += `<img src="${array[index].img}">`;
+      }
+      bloc.innerHTML = html;
+      tablero.append(bloc);
+      localStorage.setItem("Lista Compra", array);
+      break;
+    case "DIFICIL":
+      for (let index = 0; index < 9; index++) {
+        array.push(comidas[Math.floor(Math.random() * 11)]);
+        html += `<img src="${array[index].img}">`;
+      }
+      bloc.innerHTML = html;
+      tablero.append(bloc);
+      localStorage.setItem("Lista Compra", array);
+      break;
+    default:
+      break;
+  }
+}
 /* 
   const extra = document.createElement("button");
   extra.value = 30;

@@ -70,9 +70,26 @@
   z-index: -1;
 }
 
-.botonEasy:hover:not(:disabled),
-.botonMid:hover:not(:disabled),
-.botonHard:hover:not(:disabled) {
+.botonEasy:hover,
+.botonMid:hover,
+.botonHard:hover {
   filter: brightness(1.1);
   -webkit-filter: brightness(1.1);
+}
+
+.carrito {
+  background-color: aqua;
+}
+
+.estanteria {
+  background-color: aquamarine;
+}
+
+img {
+  width: 50px;
+  height: 50px;
+}
+
+.bloc {
+  background-image: url("./img/nota.png");
 }
