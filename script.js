@@ -1,10 +1,8 @@
 //Creación del tablero de juego, y agregarlo al body
-
 const tablero = document.createElement("section");
 tablero.id = "tablero";
 
 //Creción de la caja de botones y agregarlos al tablero de juego.
-
 const div_btn = document.createElement("div");
 div_btn.id = "btns";
 document.body.append(tablero);
@@ -101,17 +99,14 @@ CrearBtn();
 document.addEventListener("click", (e) => {
   switch (e.target.innerText) {
     case "FACIL":
-      play(e.target.value, e.target.innerText);
-      console.log("facil");
+      play(e.target.innerText);
       break;
 
     case "MEDIO":
-      play(e.target.value, e.target.innerText);
-      console.log("medio");
+      play(e.target.innerText);
       break;
     case "DIFICIL":
-      play(e.target.value, e.target.innerText);
-      console.log("dificil");
+      play(e.target.innerText);
       break;
 
     default:
@@ -120,7 +115,7 @@ document.addEventListener("click", (e) => {
 });
 
 //Funcion para el click
-function play(tiempo, dificultad) {
+function play(dificultad) {
   tablero.innerHTML = "";
   let bloc = document.createElement("fieldset");
   bloc.classList.add("bloc");
@@ -128,56 +123,141 @@ function play(tiempo, dificultad) {
     Listado("FACIL");
     setTimeout(() => {
       tablero.innerHTML = "";
+      tablero.append(estanteria);
+      timeShelving(dificultad);
     }, 10000);
   } else if (dificultad == "MEDIO") {
     Listado("MEDIO");
     setTimeout(() => {
       tablero.innerHTML = "";
+      timeShelving(dificultad);
     }, 10000);
   } else if (dificultad == "DIFICIL") {
     Listado("DIFICIL");
     setTimeout(() => {
       tablero.innerHTML = "";
+      timeShelving(dificultad);
     }, 8000);
   }
 }
 
 function Listado(dificultad) {
-  let array = [];
-  let html = "";
-  let exists = false;
+  let arrayListado = [];
   switch (dificultad) {
     case "FACIL":
-      for (let index = 0; index < 7; index++) {
-        array.push(comidas[Math.floor(Math.random() * 11)]);
-        html += `<img src="${array[index].img}">`;
-      }
-      bloc.innerHTML = html;
+      arrayListado = mostrarBlocRandom(7);
+      bloc.innerHTML = arrayListado[1];
       tablero.append(bloc);
-      localStorage.setItem("Lista Compra", JSON.stringify(array));
+      localStorage.setItem("Lista Compra", JSON.stringify(arrayListado[0]));
+
       break;
     case "MEDIO":
-      for (let index = 0; index < 7; index++) {
-        array.push(comidas[Math.floor(Math.random() * 11)]);
-        html += `<img src="${array[index].img}">`;
-      }
-      bloc.innerHTML = html;
+      arrayListado = mostrarBlocRandom(7);
+      bloc.innerHTML = arrayListado[1];
       tablero.append(bloc);
-      localStorage.setItem("Lista Compra", array);
+      localStorage.setItem("Lista Compra", JSON.stringify(arrayListado[0]));
+
       break;
     case "DIFICIL":
-      for (let index = 0; index < 9; index++) {
-        array.push(comidas[Math.floor(Math.random() * 11)]);
-        html += `<img src="${array[index].img}">`;
-      }
-      bloc.innerHTML = html;
+      arrayListado = mostrarBlocRandom(9);
+      bloc.innerHTML = arrayListado[1];
       tablero.append(bloc);
-      localStorage.setItem("Lista Compra", array);
+      localStorage.setItem("Lista Compra", JSON.stringify(arrayListado[0]));
+
       break;
+
     default:
       break;
   }
 }
+
+//Funcion que muestra la lista de la compra sin ningun item repetido y lo guarda en el local
+function mostrarBlocRandom(numero) {
+  let array = [];
+  let html = "";
+  let cont = 0;
+  while (array.length < numero) {
+    let exists = false;
+    let food = comidas[Math.floor(Math.random() * 11)];
+    if (array.length > 0) {
+      array.forEach((comida) => {
+        if (food == comida) {
+          exists = true;
+        }
+      });
+      if (exists == false) {
+        array.push(food);
+        html += `<img src="${array[cont].img}">`;
+        cont++;
+      }
+    } else {
+      array.push(food);
+      html += `<img src="${array[cont].img}">`;
+      cont++;
+    }
+  }
+  return [array, html];
+}
+
+//Funcion para el tiempo que se muestra la estantería según el nivel
+function timeShelving(dificultad) {
+  let estanteria = document.createElement("fieldset");
+  estanteria.classList.add("estanteria");
+  if (dificultad == "FACIL") {
+    setTimeout(() => {
+      let localEasy = localStorage.getItem("facil");
+      console.log("hola");
+      if (localEasy != undefined) {
+        if (localEasy == "superado") {
+          tablero.innerHTML =
+            "<h1 class='resultadoAcierto'>¡Has superado el nivel!</h1>";
+        } else {
+          tablero.innerHTML =
+            "<h1 class='resultadoFallo'>Has fallado el nivel. Prueba otra vez</h1>";
+        }
+      } else {
+        localStorage.setItem("facil", "fallado");
+        tablero.innerHTML =
+          "<h1 class='resultadoFallo'>Has fallado el nivel. Prueba otra vez</h1>";
+      }
+    }, 60000);
+  } else if (dificultad == "MEDIO") {
+    setTimeout(() => {
+      let localEasy = localStorage.getItem("medio");
+      if (localEasy != undefined) {
+        if (localEasy == "superado") {
+          tablero.innerHTML =
+            "<h1 class='resultadoAcierto'>¡Has superado el nivel!</h1>";
+        } else {
+          tablero.innerHTML =
+            "<h1 class='resultadoFallo'>Has fallado el nivel. Prueba otra vez</h1>";
+        }
+      } else {
+        localStorage.setItem("medio", "fallado");
+        tablero.innerHTML =
+          "<h1 class='resultadoFallo'>Has fallado el nivel. Prueba otra vez</h1>";
+      }
+    }, 60000);
+  } else if (dificultad == "DIFICIL") {
+    setTimeout(() => {
+      let localEasy = localStorage.getItem("dificil");
+      if (localEasy != undefined) {
+        if (localEasy == "superado") {
+          tablero.innerHTML =
+            "<h1 class='resultadoAcierto'>¡Has superado el nivel!</h1>";
+        } else {
+          tablero.innerHTML =
+            "<h1 class='resultadoFallo'>Has fallado el nivel. Prueba otra vez</h1>";
+        }
+      } else {
+        localStorage.setItem("dificil", "fallado");
+        tablero.innerHTML =
+          "<h1 class='resultadoFallo'>Has fallado el nivel. Prueba otra vez</h1>";
+      }
+    }, 40000);
+  }
+}
+
 /* 
   const extra = document.createElement("button");
   extra.value = 30;

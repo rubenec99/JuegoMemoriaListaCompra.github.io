@@ -82,14 +82,46 @@
 }
 
 .estanteria {
-  background-color: aquamarine;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+  width: 500px;
+  height: 470px;
+  background-image: url("./img/estanteria.png");
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 img {
   width: 50px;
   height: 50px;
+  margin: 5%;
 }
 
+/* FIELDSET (BLOC LISTA DE LA COMRPA) */
 .bloc {
-  background-image: url("./img/nota.png");
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 100 100'%3E%3Cg stroke='%23CCC' stroke-width='12.2' %3E%3Crect fill='%23F5F5F5' x='-60' y='-60' width='60' height='240'/%3E%3C/g%3E%3C/svg%3E");
+  width: 33%;
+  margin: 0 auto;
+  text-align: center;
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.6) 0px 5px 15px;
+  border-left: 5px solid rgb(87, 87, 87);
+}
+
+/* TEXTO RESULTADO */
+.resultadoFallo {
+  color: red;
+  text-transform: uppercase;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  text-shadow: 1px 1px 1px rgb(255, 255, 255);
+}
+
+.resultadoAcierto {
+  color: white;
+  text-transform: uppercase;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  text-shadow: 1px 1px 1px rgb(255, 255, 255);
 }
