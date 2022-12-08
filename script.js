@@ -21,6 +21,7 @@ bloc.classList.add("bloc");
 
 //boton comprobar
 const btnComprobar = document.createElement("button");
+btnComprobar.innerText = "Comprobar";
 btnComprobar.classList.add("boton");
 
 //Array de imagenes
@@ -74,26 +75,59 @@ const comidas = [
     img: "./img/tomate.png",
   },
 ];
-
+const easy = document.createElement("button");
+const mid = document.createElement("button");
+const hard = document.createElement("button");
+const extra = document.createElement("button");
 //Funcion para la creacion de los botones de nivel y agregandolos a la caja de botones, asignación de clase a cada boton
 function CrearBtn() {
-  const easy = document.createElement("button");
+  tablero.innerHTML = "";
+  const tituloJuego = document.createElement("h1");
+  tituloJuego.innerText = "JUEGO DEL CARRITO DE LA COMPRA";
+  tituloJuego.classList.add("informacion");
+  tablero.append(tituloJuego);
+
+  const reglas = document.createElement("p");
+  reglas.innerText =
+    "El funcionamiento del juego es sencillo. En primer lugar se mostrará una lista de la compra con diferentes artículos, estos deberán ser memorizados en un tiempo en concreto. A continuación se visualizará una estantería llena con los productos, estos deberán ser arrastrados al carrito de la compra en un tiempo y orden determinado en función del nivel seleccionado.";
+  reglas.classList.add("reglas");
+  tablero.append(reglas);
+
+  const inform = document.createElement("h3");
+  inform.innerText =
+    "El nivel extra será desbloqueado una vez se hayan superado todos los niveles";
+  inform.classList.add("informacion");
+  tablero.append(inform);
+
   easy.value = 60;
   easy.innerText = "Facil";
   easy.classList.add("boton");
   div_btn.append(easy);
 
-  const mid = document.createElement("button");
   mid.value = 60;
   mid.innerText = "Medio";
   mid.classList.add("boton");
   div_btn.append(mid);
 
-  const hard = document.createElement("button");
   hard.value = 40;
   hard.innerText = "Dificil";
   hard.classList.add("boton");
   div_btn.append(hard);
+
+  extra.value = 30;
+  extra.innerText = "Extra";
+  extra.classList.add("boton");
+  if (
+    localStorage.getItem("facil") == "superado" &&
+    localStorage.getItem("medio") == "superado" &&
+    localStorage.getItem("dificil") == "superado"
+  ) {
+    extra.classList.remove("desactivado");
+  } else {
+    extra.classList.add("desactivado");
+  }
+
+  div_btn.append(extra);
   tablero.append(div_btn);
 }
 
@@ -103,14 +137,17 @@ CrearBtn();
 document.addEventListener("click", (e) => {
   switch (e.target.innerText) {
     case "FACIL":
-      play(e.target.innerText);
+      play(e.target.innerText, 60);
       break;
 
     case "MEDIO":
-      play(e.target.innerText);
+      play(e.target.innerText, 60);
       break;
     case "DIFICIL":
-      play(e.target.innerText);
+      play(e.target.innerText, 40);
+      break;
+    case "EXTRA":
+      play(e.target.innerText, 30);
       break;
 
     default:
@@ -119,11 +156,15 @@ document.addEventListener("click", (e) => {
 });
 
 //Funcion para el click
-function play(dificultad) {
+function play(dificultad, tiempo) {
   tablero.innerHTML = "";
+  let info = document.createElement("h2");
+  info.classList.add("informacion");
   let bloc = document.createElement("fieldset");
   bloc.classList.add("bloc");
   if (dificultad == "FACIL") {
+    info.innerText = `Dispones de ${tiempo} segundos para ingresar la compra en cualquier orden`;
+    tablero.append(info);
     Listado("FACIL");
     setTimeout(() => {
       tablero.innerHTML = "";
@@ -132,25 +173,43 @@ function play(dificultad) {
       tablero.append(btnComprobar);
       LLenadoEstanteria("facil");
       timeShelving(dificultad);
-    }, 1000);
+    }, 10000);
   } else if (dificultad == "MEDIO") {
+    info.innerText = `Dispones de ${tiempo} segundos para ingresar la compra en el orden mostrado`;
+    tablero.append(info);
     Listado("MEDIO");
     setTimeout(() => {
       tablero.innerHTML = "";
       tablero.append(estanteria);
       tablero.append(carrito);
+      tablero.append(btnComprobar);
       LLenadoEstanteria("medio");
       timeShelving(dificultad);
     }, 10000);
   } else if (dificultad == "DIFICIL") {
+    info.innerText = `Dispones de ${tiempo} segundos para ingresar la compra en el orden mostrado`;
+    tablero.append(info);
     Listado("DIFICIL");
     setTimeout(() => {
       tablero.innerHTML = "";
       tablero.append(estanteria);
       tablero.append(carrito);
+      tablero.append(btnComprobar);
       LLenadoEstanteria("dificil");
       timeShelving(dificultad);
     }, 8000);
+  } else {
+    info.innerText = `Dispones de ${tiempo} segundos para ingresar la compra en el orden mostrado`;
+    tablero.append(info);
+    Listado("EXTRA");
+    setTimeout(() => {
+      tablero.innerHTML = "";
+      tablero.append(estanteria);
+      tablero.append(carrito);
+      tablero.append(btnComprobar);
+      LLenadoEstanteria("extra");
+      timeShelving(dificultad);
+    }, 6000);
   }
 }
 
@@ -190,10 +249,92 @@ function LLenadoEstanteria(dificultad) {
   });
 
   btnComprobar.addEventListener("click", () => {
+    const listCompraArray = JSON.parse(localStorage.getItem("Lista Compra"));
+    const miCompra = JSON.parse(localStorage.getItem("listaPropia"));
+    let contadorValido = 0;
     switch (dificultad) {
-      case value:
+      case "facil":
+        listCompraArray.forEach((compra) => {
+          for (let index = 0; index < miCompra.length; index++) {
+            if (
+              compra.img ==
+              "." + miCompra[index].substr(21, miCompra[index].length - 1)
+            ) {
+              contadorValido++;
+            }
+          }
+        });
+        if (contadorValido == listCompraArray.length) {
+          localStorage.setItem("facil", "superado");
+          nivelAcabado(dificultad.toLowerCase());
+        } else {
+          localStorage.setItem("facil", "fallado");
+          nivelAcabado(dificultad.toLowerCase());
+        }
         break;
-
+      case "medio":
+        contadorValido = 0;
+        listCompraArray.forEach((compra, i) => {
+          for (let index = 0; index < miCompra.length; index++) {
+            if (
+              compra.img ==
+                "." + miCompra[index].substr(21, miCompra[index].length - 1) &&
+              index == i
+            ) {
+              contadorValido++;
+            }
+          }
+        });
+        if (contadorValido == listCompraArray.length) {
+          localStorage.setItem("medio", "superado");
+          nivelAcabado(dificultad.toLowerCase());
+        } else {
+          localStorage.setItem("medio", "fallado");
+          nivelAcabado(dificultad.toLowerCase());
+        }
+        break;
+      case "dificil":
+        contadorValido = 0;
+        listCompraArray.forEach((compra, i) => {
+          for (let index = 0; index < miCompra.length; index++) {
+            if (
+              compra.img ==
+                "." + miCompra[index].substr(21, miCompra[index].length - 1) &&
+              index == i
+            ) {
+              contadorValido++;
+            }
+          }
+        });
+        if (contadorValido == listCompraArray.length) {
+          localStorage.setItem("dificil", "superado");
+          nivelAcabado(dificultad.toLowerCase());
+        } else {
+          localStorage.setItem("dificil", "fallado");
+          nivelAcabado(dificultad.toLowerCase());
+        }
+        break;
+      case "extra":
+        contadorValido = 0;
+        listCompraArray.forEach((compra, i) => {
+          for (let index = 0; index < miCompra.length; index++) {
+            if (
+              compra.img ==
+                "." + miCompra[index].substr(21, miCompra[index].length - 1) &&
+              index == i
+            ) {
+              contadorValido++;
+            }
+          }
+        });
+        if (contadorValido == listCompraArray.length) {
+          localStorage.setItem("extra", "superado");
+          nivelAcabado(dificultad.toLowerCase());
+        } else {
+          localStorage.setItem("extra", "fallado");
+          nivelAcabado(dificultad.toLowerCase());
+        }
+        break;
       default:
         break;
     }
@@ -219,6 +360,13 @@ function Listado(dificultad) {
       break;
     case "DIFICIL":
       arrayListado = mostrarBlocRandom(9);
+      bloc.innerHTML = arrayListado[1];
+      tablero.append(bloc);
+      localStorage.setItem("Lista Compra", JSON.stringify(arrayListado[0]));
+
+      break;
+    case "EXTRA":
+      arrayListado = mostrarBlocRandom(10);
       bloc.innerHTML = arrayListado[1];
       tablero.append(bloc);
       localStorage.setItem("Lista Compra", JSON.stringify(arrayListado[0]));
@@ -258,62 +406,58 @@ function mostrarBlocRandom(numero) {
   return [array, html];
 }
 
+function nivelAcabado(dificultad) {
+  let localEasy = localStorage.getItem(dificultad);
+  const btnVolver = document.createElement("button");
+  btnVolver.classList.add("boton");
+  btnVolver.innerText = "Volver a inicio";
+  if (localEasy != undefined) {
+    if (localEasy == "superado") {
+      if (dificultad == "extra") {
+        tablero.innerHTML =
+          "<h1 class='resultadoAcierto'>¡Enhorabuen has superado todos los niveles!</h1>";
+
+        tablero.append(btnVolver);
+      } else {
+        tablero.innerHTML =
+          "<h1 class='resultadoAcierto'>¡Has superado el nivel!</h1>";
+        tablero.append(btnVolver);
+      }
+    } else {
+      tablero.innerHTML =
+        "<h1 class='resultadoFallo'>Has fallado el nivel. Prueba otra vez</h1>";
+
+      tablero.append(btnVolver);
+    }
+  } else {
+    localStorage.setItem(dificultad, "fallado");
+    tablero.innerHTML =
+      "<h1 class='resultadoFallo'>Has fallado el nivel. Prueba otra vez</h1>";
+    tablero.append(btnVolver);
+  }
+  btnVolver.addEventListener("click", CrearBtn);
+}
+
 //Funcion para el tiempo que se muestra la estantería según el nivel
 function timeShelving(dificultad) {
   let estanteria = document.createElement("fieldset");
   estanteria.classList.add("estanteria");
   if (dificultad == "FACIL") {
     setTimeout(() => {
-      let localEasy = localStorage.getItem("facil");
-      console.log("hola");
-      if (localEasy != undefined) {
-        if (localEasy == "superado") {
-          tablero.innerHTML =
-            "<h1 class='resultadoAcierto'>¡Has superado el nivel!</h1>";
-        } else {
-          tablero.innerHTML =
-            "<h1 class='resultadoFallo'>Has fallado el nivel. Prueba otra vez</h1>";
-        }
-      } else {
-        localStorage.setItem("facil", "fallado");
-        tablero.innerHTML =
-          "<h1 class='resultadoFallo'>Has fallado el nivel. Prueba otra vez</h1>";
-      }
+      nivelAcabado(dificultad.toLowerCase());
     }, 60000);
   } else if (dificultad == "MEDIO") {
     setTimeout(() => {
-      let localEasy = localStorage.getItem("medio");
-      if (localEasy != undefined) {
-        if (localEasy == "superado") {
-          tablero.innerHTML =
-            "<h1 class='resultadoAcierto'>¡Has superado el nivel!</h1>";
-        } else {
-          tablero.innerHTML =
-            "<h1 class='resultadoFallo'>Has fallado el nivel. Prueba otra vez</h1>";
-        }
-      } else {
-        localStorage.setItem("medio", "fallado");
-        tablero.innerHTML =
-          "<h1 class='resultadoFallo'>Has fallado el nivel. Prueba otra vez</h1>";
-      }
+      nivelAcabado(dificultad.toLowerCase());
     }, 60000);
   } else if (dificultad == "DIFICIL") {
     setTimeout(() => {
-      let localEasy = localStorage.getItem("dificil");
-      if (localEasy != undefined) {
-        if (localEasy == "superado") {
-          tablero.innerHTML =
-            "<h1 class='resultadoAcierto'>¡Has superado el nivel!</h1>";
-        } else {
-          tablero.innerHTML =
-            "<h1 class='resultadoFallo'>Has fallado el nivel. Prueba otra vez</h1>";
-        }
-      } else {
-        localStorage.setItem("dificil", "fallado");
-        tablero.innerHTML =
-          "<h1 class='resultadoFallo'>Has fallado el nivel. Prueba otra vez</h1>";
-      }
+      nivelAcabado(dificultad.toLowerCase());
     }, 40000);
+  } else {
+    setTimeout(() => {
+      nivelAcabado(dificultad.toLowerCase());
+    }, 30000);
   }
 }
 
