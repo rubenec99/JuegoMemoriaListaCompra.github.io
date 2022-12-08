@@ -19,6 +19,10 @@ carrito.classList.add("carrito");
 const bloc = document.createElement("fieldset");
 bloc.classList.add("bloc");
 
+//boton comprobar
+const btnComprobar = document.createElement("button");
+btnComprobar.classList.add("boton");
+
 //Array de imagenes
 const comidas = [
   {
@@ -76,19 +80,19 @@ function CrearBtn() {
   const easy = document.createElement("button");
   easy.value = 60;
   easy.innerText = "Facil";
-  easy.classList.add("botonEasy");
+  easy.classList.add("boton");
   div_btn.append(easy);
 
   const mid = document.createElement("button");
   mid.value = 60;
   mid.innerText = "Medio";
-  mid.classList.add("botonMid");
+  mid.classList.add("boton");
   div_btn.append(mid);
 
   const hard = document.createElement("button");
   hard.value = 40;
   hard.innerText = "Dificil";
-  hard.classList.add("botonHard");
+  hard.classList.add("boton");
   div_btn.append(hard);
   tablero.append(div_btn);
 }
@@ -124,21 +128,76 @@ function play(dificultad) {
     setTimeout(() => {
       tablero.innerHTML = "";
       tablero.append(estanteria);
+      tablero.append(carrito);
+      tablero.append(btnComprobar);
+      LLenadoEstanteria("facil");
       timeShelving(dificultad);
-    }, 10000);
+    }, 1000);
   } else if (dificultad == "MEDIO") {
     Listado("MEDIO");
     setTimeout(() => {
       tablero.innerHTML = "";
+      tablero.append(estanteria);
+      tablero.append(carrito);
+      LLenadoEstanteria("medio");
       timeShelving(dificultad);
     }, 10000);
   } else if (dificultad == "DIFICIL") {
     Listado("DIFICIL");
     setTimeout(() => {
       tablero.innerHTML = "";
+      tablero.append(estanteria);
+      tablero.append(carrito);
+      LLenadoEstanteria("dificil");
       timeShelving(dificultad);
     }, 8000);
   }
+}
+
+//Obtener todas las imgs de la estanteria
+let imgsComidas;
+
+//Funcion para llenar la estantería con la img del array
+function LLenadoEstanteria(dificultad) {
+  comidas.forEach((comida) => {
+    const imgComida = document.createElement("img");
+    imgComida.classList.add("imgComida");
+    imgComida.src = comida.img;
+    imgComida.draggable = true;
+    estanteria.append(imgComida);
+  });
+  imgsComidas = document.querySelectorAll(".imgComida");
+  //Drag and drop
+  let arrastrar = "";
+  let arrayIComidas = [];
+  imgsComidas.forEach((com) => {
+    com.addEventListener("drag", (event) => {
+      event.preventDefault();
+      arrastrar = event.target;
+    });
+    com.addEventListener("dragover", (event) => {
+      event.preventDefault();
+    });
+  });
+  carrito.addEventListener("dragover", (e) => {
+    e.preventDefault();
+  });
+
+  carrito.addEventListener("drop", (e) => {
+    e.preventDefault();
+    arrayIComidas.push(arrastrar.src);
+    localStorage.setItem("listaPropia", JSON.stringify(arrayIComidas));
+  });
+
+  btnComprobar.addEventListener("click", () => {
+    switch (dificultad) {
+      case value:
+        break;
+
+      default:
+        break;
+    }
+  });
 }
 
 function Listado(dificultad) {

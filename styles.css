@@ -12,8 +12,9 @@
   background-attachment: fixed;
   background-size: cover;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
 }
 
 #btns {
@@ -23,9 +24,7 @@
 }
 
 /* BOTONES */
-.botonEasy,
-.botonMid,
-.botonHard {
+.boton {
   background-color: #40aaea;
   border: solid transparent;
   border-radius: 16px;
@@ -53,9 +52,7 @@
   width: 20%;
 }
 
-.botonEasy:after,
-.botonMid:after,
-.botonHard:after {
+.boton:after {
   background-clip: padding-box;
   background-color: #82cbf8;
   border: solid transparent;
@@ -70,15 +67,17 @@
   z-index: -1;
 }
 
-.botonEasy:hover,
-.botonMid:hover,
-.botonHard:hover {
+.boton:hover {
   filter: brightness(1.1);
   -webkit-filter: brightness(1.1);
 }
 
 .carrito {
-  background-color: aqua;
+  background-image: url("./img/carrito.png");
+  width: 250px;
+  height: 250px;
+  background-repeat: no-repeat;
+  background-size: 250px;
 }
 
 .estanteria {
@@ -91,9 +90,10 @@
   background-image: url("./img/estanteria.png");
   background-size: cover;
   background-repeat: no-repeat;
+  padding-top: 35px;
 }
 
-img {
+.bloc > img {
   width: 50px;
   height: 50px;
   margin: 5%;
@@ -116,12 +116,20 @@ img {
   color: red;
   text-transform: uppercase;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
-  text-shadow: 1px 1px 1px rgb(255, 255, 255);
+  text-shadow: 0px 0px 5px rgb(255, 0, 0, 0.6);
 }
 
 .resultadoAcierto {
   color: white;
   text-transform: uppercase;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
-  text-shadow: 1px 1px 1px rgb(255, 255, 255);
+  text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.6);
+}
+
+.estanteria > .imgComida {
+  width: 75px;
+  height: 75px;
+  margin-right: 30px;
+  margin-left: 30px;
+  margin-top: 20px;
 }
